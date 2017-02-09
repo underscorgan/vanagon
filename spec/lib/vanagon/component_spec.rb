@@ -46,6 +46,8 @@ describe "Vanagon::Component" do
       @workdir = Dir.mktmpdir
       @file_name = 'fake_file.txt'
       @fake_file = "file://spec/fixtures/files/#{@file_name}"
+      @fake_dir = 'fake_dir'
+      @fake_tar = "file://spec/fixtures/files/#{@fake_dir}.tar.gz"
     end
 
     subject do
@@ -55,15 +57,25 @@ describe "Vanagon::Component" do
 
       plat = Vanagon::Platform::DSL.new('el-5-x86_64')
       plat.instance_eval("platform 'el-5-x86_64' do |plat| end")
+      @platform = plat._platform
 
-      comp = Vanagon::Component::DSL.new('build-dir-test', {}, plat)
+      comp = Vanagon::Component::DSL.new('build-dir-test', {}, @platform)
       comp.add_source @fake_file
+      comp.add_source @fake_tar
       comp._component
     end
 
     it "copies secondary sources into the workdir" do
-      subject.get_sources(@workdir)
+      component = subject
+      component.get_sources(@workdir)
       expect(File.exist?(File.join(@workdir, @file_name))).to be true
+      expect(File.exist?(File.join(@workdir, "#{@fake_dir}.tar.gz"))).to be true
+      # this is going to fail. figure out how to test this to be not super fragile
+      # reasoning behind this test is extract_with is going to be parsed in the makefile
+      # rules and that is what will be doing the untarring, so we want to make sure the
+      # tarball is ending up where we want it to be and that extract_with is ending
+      # up with the tarball.
+      expect(component.extract_with.join(" && ")).to match "#{@fake_dir}.tar.gz"
     end
   end
 end
