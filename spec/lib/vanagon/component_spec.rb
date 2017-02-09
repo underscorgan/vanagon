@@ -1,4 +1,5 @@
 require 'vanagon/component'
+require 'vanagon/platform'
 
 describe "Vanagon::Component" do
   describe "#get_environment" do
@@ -51,7 +52,18 @@ describe "Vanagon::Component" do
       # Initialize a new instance of Vanagon::Component and define a
       # new secondary source. We can now reason about this instance and
       # test behavior for retrieving secondary sources.
-      Vanagon::Component.new('build-dir-test', {}, {}).tap do |comp|
+
+      plat_def = {
+            :name                    => "el-5-i386",
+            :os_name                 => "el",
+            :os_version              => "5",
+            :architecture            => "i386", 
+            :block                   => %Q[ plat_def "el-5-i386" do |plat| end ],       
+      }
+      plat = Vanagon::Platform::DSL.new(plat_def[:name])
+      plat.instance_eval(plat_def[:block])
+
+      Vanagon::Component.new('build-dir-test', {}, plat).tap do |comp|
         comp.sources << OpenStruct.new(url: @fake_file)
       end
     end
