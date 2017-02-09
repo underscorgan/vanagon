@@ -53,19 +53,12 @@ describe "Vanagon::Component" do
       # new secondary source. We can now reason about this instance and
       # test behavior for retrieving secondary sources.
 
-      plat_def = {
-            :name                    => "el-5-i386",
-            :os_name                 => "el",
-            :os_version              => "5",
-            :architecture            => "i386", 
-            :block                   => %Q[ plat_def "el-5-i386" do |plat| end ],       
-      }
-      plat = Vanagon::Platform::DSL.new(plat_def[:name])
-      plat.instance_eval(plat_def[:block])
+      plat = Vanagon::Platform::DSL.new('el-5-x86_64')
+      plat.instance_eval("platform 'el-5-x86_64' do |plat| end")
 
-      Vanagon::Component.new('build-dir-test', {}, plat).tap do |comp|
-        comp.sources << OpenStruct.new(url: @fake_file)
-      end
+      comp = Vanagon::Component::DSL.new('build-dir-test', {}, plat)
+      comp.add_source @fake_file
+      comp._component
     end
 
     it "copies secondary sources into the workdir" do
