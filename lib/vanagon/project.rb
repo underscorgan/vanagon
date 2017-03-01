@@ -13,6 +13,11 @@ class Vanagon
     attr_accessor :cleanup, :version_file, :release, :replaces, :provides
     attr_accessor :conflicts, :bill_of_materials, :retry_count, :timeout
 
+    # Extra vars to be set in the spec file or debian rules.
+    # Good for setting extra %define or %global things for RPM, or env
+    # variables needed in the debian rules file
+    attr_accessor :custom_build_vars
+
     # Loads a given project from the configdir
     #
     # @param name [String] the name of the project
@@ -51,6 +56,7 @@ class Vanagon
       @replaces = []
       @provides = []
       @conflicts = []
+      @custom_build_vars = []
     end
 
     # Magic getter to retrieve settings in the project

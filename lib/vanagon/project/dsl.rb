@@ -249,6 +249,12 @@ class Vanagon
       def retry_count(retry_count)
         @project.retry_count = retry_count
       end
+
+      def custom_build_var(var)
+        platform = @project.platform
+        fail "I don't know how to set custom build vars for #{platform.name}, teach me?" unless platform.is_rpm? || platform.is_deb?
+        @project.custom_build_vars << var
+      end
     end
   end
 end
