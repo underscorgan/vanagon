@@ -226,9 +226,12 @@ class Vanagon
       # @param target [String] path to the desired target of the file
       # @param owner  [String] owner of the file
       # @param group  [String] group owner of the file
-      def install_file(source, target, mode: '0644', owner: nil, group: nil)
+      def install_file(source, target, mode: '0644', owner: nil, group: nil) # rubocop:disable Metrics/AbcSize
         @component.install << "#{@component.platform.install} -d '#{File.dirname(target)}'"
         @component.install << "#{@component.platform.copy} -p '#{source}' '#{target}'"
+        @component.install << "chown '#{owner}' '#{target}'" unless owner.nil?
+        @component.install << "chgrp '#{group}' '#{target}'" unless group.nil?
+        @component.install << "chmod #{mode} '#{target}'"
         @component.add_file Vanagon::Common::Pathname.file(target, mode: mode, owner: owner, group: group)
       end
 
@@ -370,6 +373,11 @@ class Vanagon
       # @param owner [String] owner of the directory
       # @param group [String] group of the directory
       def directory(dir, mode: nil, owner: nil, group: nil)
+        install_flags = ['-d']
+        install_flags << "-o '#{owner}'" unless owner.nil?
+        install_flags << "-g '#{group}'" unless group.nil?
+        install_flags << "-m '#{mode}'" unless mode.nil?
+        @component.install << "#{@component.platform.install} #{install_flags.join(' ')} '#{dir}'"
         @component.directories << Vanagon::Common::Pathname.new(dir, mode: mode, owner: owner, group: group)
       end
 

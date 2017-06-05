@@ -576,6 +576,9 @@ end" }
       comp.install_file('thing1', 'place/to/put/thing1', owner: 'bob', group: 'timmy', mode: '0022')
       expect(comp._component.install).to include("install -d 'place/to/put'")
       expect(comp._component.install).to include("cp -p 'thing1' 'place/to/put/thing1'")
+      expect(comp._component.install).to include("chown 'bob' 'place/to/put/thing1'")
+      expect(comp._component.install).to include("chgrp 'timmy' 'place/to/put/thing1'")
+      expect(comp._component.install).to include("chmod 0022 'place/to/put/thing1'")
       expect(comp._component.files).to include(Vanagon::Common::Pathname.file('place/to/put/thing1', mode: '0022', owner: 'bob', group: 'timmy'))
     end
   end
@@ -716,32 +719,36 @@ end" }
 
   describe '#directory' do
     it 'adds a directory with the desired path to the directory collection for the component' do
-      comp = Vanagon::Component::DSL.new('directory-test', {}, {})
+      comp = Vanagon::Component::DSL.new('directory-test', {}, platform)
       comp.directory('/a/b/c')
       expect(comp._component.directories).to include(Vanagon::Common::Pathname.new('/a/b/c'))
     end
 
     it 'adds a directory with the desired mode to the directory collection for the component' do
-      comp = Vanagon::Component::DSL.new('directory-test', {}, {})
+      comp = Vanagon::Component::DSL.new('directory-test', {}, platform)
       comp.directory('/a/b/c', mode: '0755')
+      expect(comp._component.install).to include("install -d -m '0755' '/a/b/c'")
       expect(comp._component.directories.first).to eq(Vanagon::Common::Pathname.new('/a/b/c', mode: '0755'))
     end
 
     it 'adds a directory with the desired owner to the directory collection for the component' do
-      comp = Vanagon::Component::DSL.new('directory-test', {}, {})
+      comp = Vanagon::Component::DSL.new('directory-test', {}, platform)
       comp.directory('/a/b/c', owner: 'olivia')
+      expect(comp._component.install).to include("install -d -o 'olivia' '/a/b/c'")
       expect(comp._component.directories.first).to eq(Vanagon::Common::Pathname.new('/a/b/c', owner: 'olivia'))
     end
 
     it 'adds a directory with the desired group to the directory collection for the component' do
-      comp = Vanagon::Component::DSL.new('directory-test', {}, {})
+      comp = Vanagon::Component::DSL.new('directory-test', {}, platform)
       comp.directory('/a/b/c', group: 'release-engineering')
+      expect(comp._component.install).to include("install -d -g 'release-engineering' '/a/b/c'")
       expect(comp._component.directories.first).to eq(Vanagon::Common::Pathname.new('/a/b/c', group: 'release-engineering'))
     end
 
     it 'adds a directory with the desired attributes to the directory collection for the component' do
-      comp = Vanagon::Component::DSL.new('directory-test', {}, {})
+      comp = Vanagon::Component::DSL.new('directory-test', {}, platform)
       comp.directory('/a/b/c', mode: '0400', owner: 'olivia', group: 'release-engineering')
+      expect(comp._component.install).to include("install -d -o 'olivia' -g 'release-engineering' -m '0400' '/a/b/c'")
       expect(comp._component.directories.first).to eq(Vanagon::Common::Pathname.new('/a/b/c', mode: '0400', owner: 'olivia', group: 'release-engineering'))
     end
   end
