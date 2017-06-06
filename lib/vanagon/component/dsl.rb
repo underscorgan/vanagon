@@ -229,9 +229,9 @@ class Vanagon
       def install_file(source, target, mode: '0644', owner: nil, group: nil) # rubocop:disable Metrics/AbcSize
         @component.install << "#{@component.platform.install} -d '#{File.dirname(target)}'"
         @component.install << "#{@component.platform.copy} -p '#{source}' '#{target}'"
-        @component.install << "chown '#{owner}' '#{target}'" unless owner.nil?
-        @component.install << "chgrp '#{group}' '#{target}'" unless group.nil?
-        @component.install << "chmod #{mode} '#{target}'"
+        @component.install << "#{@component.platform.chown} '#{owner}' '#{target}'" unless owner.nil?
+        @component.install << "#{@component.platform.chgrp} '#{group}' '#{target}'" unless group.nil?
+        @component.install << "#{@component.platform.chmod} #{mode} '#{target}'"
         @component.add_file Vanagon::Common::Pathname.file(target, mode: mode, owner: owner, group: group)
       end
 

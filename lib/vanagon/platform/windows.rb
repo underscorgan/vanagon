@@ -421,6 +421,9 @@ class Vanagon
         @num_cores = "/usr/bin/nproc"
         @install = "/usr/bin/install"
         @copy = "/usr/bin/cp"
+        @chown = "/usr/bin/chown"
+        @chgrp = "/usr/bin/chgrp"
+        @chmod = "/usr/bin/chmod"
         @package_type = "msi"
         super(name)
       end

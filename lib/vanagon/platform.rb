@@ -29,6 +29,9 @@ class Vanagon
 
     # Each of these holds the path or name of the command in question,
     # e.g. `copy = "/usr/local/bin/gcp"`, or `copy = "cp"
+    attr_accessor :chgrp
+    attr_accessor :chmod
+    attr_accessor :chown
     attr_accessor :copy
     attr_accessor :find
     attr_accessor :install
@@ -215,6 +218,9 @@ class Vanagon
       @find ||= "find"
       @sort ||= "sort"
       @copy ||= "cp"
+      @chown ||= "chown"
+      @chmod ||= "chmod"
+      @chgrp ||= "chgrp"
 
       # Our first attempt at defining metadata about a platform
       @cross_compiled ||= false
