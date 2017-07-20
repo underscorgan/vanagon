@@ -83,6 +83,9 @@ class Vanagon
     # Should we include source packages?
     attr_accessor :source_artifacts
 
+    #The package we are working with (related to triggers)
+    attr_accessor :package
+
     # Loads a given project from the configdir
     #
     # @param name [String] the name of the project
@@ -281,6 +284,21 @@ class Vanagon
       scripts = @components.map(&:preinstall_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
       if scripts.empty?
         return ': no preinstall scripts provided'
+      else
+        return scripts.join("\n")
+      end
+    end
+
+    # Collects the install triggers for the project for the specified packing state
+    #
+    #@param pkg_state [String] the package state we want to run the given scripts for.
+    #  Can be one or more of the 'install' or 'upgrade'
+    # @return [String] string of Bourne shell compatible scriptlets to execute during the preinstall
+    #   phase of packaging during the state of the system defined by pkg_state (install or upgrade)
+    def get_install_triggers(pkg_state)
+      scripts = @components.map(&:install_triggers).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
+      if scripts.empty?
+        return ': no preinstall scripts provided for triggers'
       else
         return scripts.join("\n")
       end

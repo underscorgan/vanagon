@@ -184,6 +184,16 @@ if [ "$1" -gt 1 ] ; then
   <%= get_preinstall_actions("upgrade") %>
 fi
 
+# Add support for triggers
+%triggerin -- @package
+# Run scripts on install if defined
+[ $2 = 0 ] || exit 0
+if [ "$1" = "configure" ] ; then
+  <%= get_install_triggers("install") %>
+fi
+elif ["$1" = "triggered"] ;
+  <%= get_install_triggers("upgrade") %>
+fi
 
 %post
 <%- if @platform.is_aix? || (@platform.is_el? && @platform.os_version.to_i == 4) -%>

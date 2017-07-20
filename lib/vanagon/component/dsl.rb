@@ -431,6 +431,23 @@ class Vanagon
         @component.preinstall_actions << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts)
       end
 
+      # Adds trigger to run during the preinstall phase of packaging
+      #
+      # @param pkg_state [Array] the state in which the scripts should execute. Can be
+      #   one or multiple of 'install' and 'upgrade'.
+      # @param scripts [Array] the Bourne shell compatible scriptlet(s) to execute
+      # @param pkg [String] the package the trigger will be set in
+      def add_install_triggers(pkg_state, scripts, pkg)
+        pkg_state = Array(pkg_state)
+        scripts = Array(scripts)
+        pkg = String(pkg)
+
+        if pkg_state.empty? || !(pkg_state - ["install", "upgrade"]).empty?
+          raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']"
+        end
+        @component.install_triggers << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts, :pkg => pkg)
+      end
+
       # Adds action to run during the postinstall phase of packaging
       #
       # @param pkg_state [Array] the state in which the scripts should execute. Can be

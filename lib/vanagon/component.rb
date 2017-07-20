@@ -92,6 +92,9 @@ class Vanagon
     # preinstall_actions is a two-dimensional Array, describing scripts that
     # should be executed before a given component is installed.
     attr_accessor :preinstall_actions
+    # install_triggers is a two-dimensional Array, describing scripts that
+    # should be executed when puppet agent is installed or upgraded
+    attr_accessor :install_triggers
     # postinstall_actions is a two-dimensional Array, describing scripts that
     # should be executed after a given component is installed.
     attr_accessor :postinstall_actions
@@ -152,6 +155,7 @@ class Vanagon
       @environment = Vanagon::Environment.new
       @sources = []
       @preinstall_actions = []
+      @install_triggers = []
       @postinstall_actions = []
       @preremove_actions = []
       @postremove_actions = []
