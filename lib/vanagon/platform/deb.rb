@@ -33,6 +33,10 @@ class Vanagon
         deb_dir = File.join(workdir, "debian")
         FileUtils.mkdir_p(deb_dir)
 
+        unless get_interest_triggers("install").empty? && get_install_triggers("upgrade").empty? && get_activate_triggers.empty?
+          erb_file(File.join(VANAGON_ROOT, "resources/deb/triggers.erb"), File.join(deb_dir, "#{name}.triggers"), false, { :binding => binding })
+        end
+
         # Lots of templates here
         ["changelog", "conffiles", "control", "docs", "dirs", "install", "preinst", "postinst", "postrm", "prerm", "rules"].each do |deb_file|
           erb_file(File.join(VANAGON_ROOT, "resources/deb/#{deb_file}.erb"), File.join(deb_dir, deb_file), false, { :binding => binding })

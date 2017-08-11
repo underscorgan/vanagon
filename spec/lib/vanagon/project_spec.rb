@@ -10,6 +10,15 @@ describe 'Vanagon::Project' do
     proj.component 'some-component'
     end"
   }
+  let (:dummy_platform_sysv) {
+    plat = Vanagon::Platform::DSL.new('debian-6-i386')
+    plat.instance_eval("platform 'debian-6-i386' do |plat|
+                       plat.servicetype 'sysv'
+                       plat.servicedir '/etc/init.d'
+                       plat.defaultdir '/etc/default'
+                    end")
+    plat._platform
+  }
 
 
   describe '#get_root_directories' do
@@ -114,6 +123,38 @@ describe 'Vanagon::Project' do
       @proj.components << comp3
       expect(@proj.filter_component(comp1.name)).to eq([comp1, comp2, comp3])
     end
+  end
+
+  # describe '#get_install_triggers' do
+  #   it "Collects the install triggers for the project for the specified packing state" do
+  #     comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
+  #     comp.get_install_triggers(['install', 'upgrade'])
+  #     comp.get_install_triggers('install')
+  #     expect(comp._component.install_triggers.count).to eq(0)
+  #     expect(comp._component.install_triggers.first.pkg_state.count).to eq(2)
+  #     expect(comp._component.install_triggers.first.pkg_state.first).to eq('install')
+  #     expect(comp._component.install_triggers.first.pkg_state.last).to eq('upgrade')
+      
+  #     expect(comp._component.install_triggers.last.pkg_state.count).to eq(1)
+  #     expect(comp._component.install_triggers.last.pkg_state.first).to eq('install')
+  #   end
+  # end
+
+  describe '#get_interest_triggers' do 
+    it "Collects the interest triggers for the project for the specified packaging state" do
+      comp = Vanagon::Component::DSL.new('action-test', {}, {})
+      comp.get_interest_triggers(['install', 'upgrade'])
+      comp.get_interest_triggers('install')
+      puts "ABOUT TO PRINT THIS SHIIIIIT"
+      puts comp.inspect
+      #expect(comp._component.interest_triggers.count).to eq(2)
+    end
+    # it 'fails with empty interest trigger action' do
+    #   comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
+    #   expect { comp.get_interest_triggers() }.to raise_error(Vanagon::Error)
+    # end
+    # it 'collects the activate triggers'
+    #   comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
   end
 
   describe '#generate_dependencies_info' do

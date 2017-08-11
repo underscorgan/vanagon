@@ -44,6 +44,23 @@ fi
   <%- end -%>
 <%- end -%>
 
+# adding support for triggers
+<%- install_triggers = get_interest_triggers("install").values.uniq
+  upgrade_triggers = get_interest_triggers("upgrade").values.uniq
+  unless install_triggers.empty? -%>
+# Run trigger scripts on install if defined
+if [ $1 = triggered ] && [ -z $2 ] ; then
+  <%= install_triggers.join("\n") %>
+  : # just in case there are no triggers
+fi
+
+<%- unless upgrade_triggers.empty? -%>
+# Run trigger scripts on upgrade if defined
+if [ $1 = triggered ] && [ -n $2 ] ; then
+  <%= upgrade_triggers.join("\n") %>
+  : # just in case there are no triggers
+fi
+
 # Run postinstall scripts on install if defined
 if [ $1 = configure ] && [ -z $2 ] ; then
   <%= get_postinstall_actions("install") %>

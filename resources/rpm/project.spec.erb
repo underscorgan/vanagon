@@ -184,16 +184,27 @@ if [ "$1" -gt 1 ] ; then
   <%= get_preinstall_actions("upgrade") %>
 fi
 
+<%- install_triggers = get_install_triggers("install")
+   upgrade_triggers = get_install_triggers("upgrade")
+   unless install_triggers.empty? && upgrade_triggers.empty?
+   	packages = (install_triggers.keys + upgrade_triggers.keys).uniq
+   	packages.each do |pkg|
+-%>
+
 # Add support for triggers
-%triggerin -- @package
+%triggerin -- <%= pkg %>
 # Run scripts on install if defined
 [ $2 = 0 ] || exit 0
-if [ "$1" = "configure" ] ; then
-  <%= get_install_triggers("install") %>
+if [ "$1" -eq 1 ] ; then
+  <%= install_triggers[pkg].join("\n") %>
+  : # just in case there are no triggers
 fi
-elif ["$1" = "triggered"] ;
-  <%= get_install_triggers("upgrade") %>
+elif ["$1" -gt 1 ] ;
+  <%= upgrade_triggers[pkg].join("\n") %>
+  : # just in case there are no triggers
 fi
+<% end -%>
+<% end -%>
 
 %post
 <%- if @platform.is_aix? || (@platform.is_el? && @platform.os_version.to_i == 4) -%>

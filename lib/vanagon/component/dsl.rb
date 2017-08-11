@@ -431,7 +431,7 @@ class Vanagon
         @component.preinstall_actions << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts)
       end
 
-      # Adds trigger to run during the preinstall phase of packaging
+      # Adds trigger to run during the install phase of packaging
       #
       # @param pkg_state [Array] the state in which the scripts should execute. Can be
       #   one or multiple of 'install' and 'upgrade'.
@@ -446,6 +446,22 @@ class Vanagon
           raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']"
         end
         @component.install_triggers << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts, :pkg => pkg)
+      end
+
+      def add_debian_interest_triggers(pkg_state, scripts, interest_name)
+        pkg_state = Array(pkg_state)
+        scripts = Array(scripts)
+        interest_name = String(interest_name)
+
+        if pkg_state.empty? || !(pkg_state - ["install", "upgrade"]).empty?
+          raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']"
+        end
+        @component.interest_triggers << OpenStruct.new(:pkg_state => pkg_state, :scripts => scripts, :interest_name => interest_name)
+      end
+
+      def add_debian_activate_triggers(interest_name)
+        interest_name = String(interest_name)
+        @component.activate_triggers << OpenStruct.new(:interest_name => interest_name)
       end
 
       # Adds action to run during the postinstall phase of packaging
