@@ -93,10 +93,13 @@ class Vanagon
     # should be executed before a given component is installed.
     attr_accessor :preinstall_actions
     # install_triggers is a two-dimensional Array, describing scripts that
-    # should be executed when puppet agent is installed or upgraded
+    # should be executed when a package is installed or upgraded
     attr_accessor :install_triggers
-    #WRITE INFO 
+    # interest_triggers is a two-dimensional Array, describing scripts that
+    # should be executed when a package identifies an interest trigger
     attr_accessor :interest_triggers
+    # activate_triggers is a two-dimentional Array, describing scripts that
+    # should be executed when a package identifies an activate trigger
     attr_accessor :activate_triggers
     # postinstall_actions is a two-dimensional Array, describing scripts that
     # should be executed after a given component is installed.

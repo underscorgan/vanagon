@@ -278,6 +278,10 @@ class Vanagon
     # @return [String] string of Bourne shell compatible scriptlets to execute during the preinstall
     #   phase of packaging during the state of the system defined by pkg_state (either install or upgrade)
     def get_preinstall_actions(pkg_state)
+      pkg_state = Array(pkg_state)
+      if pkg_state.empty? || !(pkg_state - ["install", "upgrade"]).empty?
+          raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']"
+      end
       scripts = @components.map(&:preinstall_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
       if scripts.empty?
         return ': no preinstall scripts provided'
@@ -290,12 +294,15 @@ class Vanagon
     #
     #@param pkg_state [String] the package state we want to run the given scripts for.
     #  Can be one or more of the 'install' or 'upgrade'
-    # @return [String] string of Bourne shell compatible scriptlets to execute during the preinstall
+    # @return [String] string of Bourne shell compatible scriptlets to execute during the install
     #   phase of packaging during the state of the system defined by pkg_state (install or upgrade)
     # RENAME TO ADD _scripts
     def get_install_triggers(pkg_state)
       pkg_state = Array(pkg_state)
       triggers = {}
+      if pkg_state.empty? || !(pkg_state - ["install", "upgrade"]).empty?
+          raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']"
+      end
       pkgs = @components.map(&:install_triggers).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:pkg)
       pkgs.each do |pkg|
         scripts = @components.map(&:install_triggers).flatten.compact.select { |s| s.pkg_state.include? pkg_state and s.pkg == pkg }.map(&:scripts)
@@ -304,9 +311,18 @@ class Vanagon
       return triggers
     end
 
+    # Collects the interest triggers for the project and its components for the
+    # specified packaging state
+    #
+    # @param pkg_state [String] the package state we want to run the given scripts for.
+    #  Can be one or more of 'install' or 'upgrade'
+    # @return {} a hash of all of the interests and their respective scripts
     def get_interest_triggers(pkg_state)
       pkg_state = Array(pkg_state)
       interest_triggers = {}
+      if pkg_state.empty? || !(pkg_state - ["install", "upgrade"]).empty?
+          raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']"
+      end
       interests = @components.map(&:interest_triggers).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:interest_name)
       interests.each do |interest|
         scripts = @components.map(&:interest_triggers).flatten.compact.select { |s| s.pkg_state.include? pkg_state and s.interest_name == interest }.map(&:scripts)
@@ -315,6 +331,7 @@ class Vanagon
       return interest_triggers
     end
 
+    # Collects activate triggers for the project and its components
     def get_activate_triggers()
       @components.map(&:activate_triggers).flatten.compact.map(&:activate_name)
     end

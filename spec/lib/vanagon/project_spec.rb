@@ -125,36 +125,55 @@ describe 'Vanagon::Project' do
     end
   end
 
-  # describe '#get_install_triggers' do
-  #   it "Collects the install triggers for the project for the specified packing state" do
-  #     comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
-  #     comp.get_install_triggers(['install', 'upgrade'])
-  #     comp.get_install_triggers('install')
-  #     expect(comp._component.install_triggers.count).to eq(0)
-  #     expect(comp._component.install_triggers.first.pkg_state.count).to eq(2)
-  #     expect(comp._component.install_triggers.first.pkg_state.first).to eq('install')
-  #     expect(comp._component.install_triggers.first.pkg_state.last).to eq('upgrade')
-      
-  #     expect(comp._component.install_triggers.last.pkg_state.count).to eq(1)
-  #     expect(comp._component.install_triggers.last.pkg_state.first).to eq('install')
-  #   end
-  # end
-
-  describe '#get_interest_triggers' do 
-    it "Collects the interest triggers for the project for the specified packaging state" do
-      comp = Vanagon::Component::DSL.new('action-test', {}, {})
-      comp.get_interest_triggers(['install', 'upgrade'])
-      comp.get_interest_triggers('install')
-      puts "ABOUT TO PRINT THIS SHIIIIIT"
-      puts comp.inspect
-      #expect(comp._component.interest_triggers.count).to eq(2)
+  describe '#get_preinstall_actions' do
+    it "Collects the preinstall actions for the specified package state" do
+      proj = Vanagon::Project.new('action-test', {})
+      proj.get_preinstall_actions(['install', 'upgrade'])
+      proj.get_preinstall_actions('install')
+      expect(proj.get_preinstall_actions(['install', 'upgrade'])).to be_instance_of(String)
     end
-    # it 'fails with empty interest trigger action' do
-    #   comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
-    #   expect { comp.get_interest_triggers() }.to raise_error(Vanagon::Error)
-    # end
-    # it 'collects the activate triggers'
-    #   comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
+  end
+
+  describe '#get_install_triggers' do
+    it "Collects the install triggers for the project for the specified packing state" do
+      proj = Vanagon::Project.new('action-test', {})
+      expect(proj.get_install_triggers(['install', 'upgrade'])).to eq({})
+      expect(proj.get_install_triggers('install')).to eq({})
+      expect(proj.get_install_triggers(['install', 'upgrade'])).to be_instance_of(Hash)
+    end
+    it 'fails with empty install trigger action' do
+      proj = Vanagon::Project.new('action-test', {})
+      expect { proj.get_install_triggers([]) }.to raise_error(Vanagon::Error)
+    end
+    it 'fails with incorrect install trigger action' do
+      proj = Vanagon::Project.new('action-test', {})
+      expect { proj.get_install_triggers('foo') }.to raise_error(Vanagon::Error)
+    end
+  end
+
+  describe '#get_interest_triggers' do
+    it "Collects the interest triggers for the project for the specified packaging state" do
+      proj = Vanagon::Project.new('action-test', {})
+      expect(proj.get_interest_triggers(['install', 'upgrade'])).to eq({})
+      expect(proj.get_interest_triggers('install')).to eq({})
+      expect(proj.get_interest_triggers(['install', 'upgrade'])).to be_instance_of(Hash)
+    end
+    it 'fails with empty interest trigger action' do
+      proj = Vanagon::Project.new('action-test', {})
+      expect { proj.get_interest_triggers([]) }.to raise_error(Vanagon::Error)
+    end
+    it 'fails with incorrect interest trigger action' do
+      proj = Vanagon::Project.new('action-test', {})
+      expect { proj.get_interest_triggers('foo') }.to raise_error(Vanagon::Error)
+    end
+  end
+
+  describe '#get_activate_triggers' do
+    it "Collects the activate triggers for the project for the specified packaging state" do
+      proj = Vanagon::Project.new('action-test', {})
+      expect(proj.get_activate_triggers()).to be_instance_of(Array)
+      expect(proj.get_activate_triggers()).to be_instance_of(Array)
+    end
   end
 
   describe '#generate_dependencies_info' do

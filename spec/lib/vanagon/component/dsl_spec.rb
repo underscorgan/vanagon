@@ -451,7 +451,7 @@ end" }
       expect { comp.add_postinstall_action([], '/bin/true') }.to raise_error(Vanagon::Error)
     end
 
-    it 'adds the corect preremove action to the component' do
+    it 'adds the correct preremove action to the component' do
       comp = Vanagon::Component::DSL.new('action-test', {}, dummy_platform_sysv)
       comp.add_preremove_action(['removal', 'upgrade'], ['chkconfig --list', '/bin/true'])
       comp.add_preremove_action('removal', 'echo "hello, world"')
