@@ -184,14 +184,17 @@ if [ "$1" -gt 1 ] ; then
   <%= get_preinstall_actions("upgrade") %>
 fi
 
-<%- install_triggers = get_install_triggers("install")
-   upgrade_triggers = get_install_triggers("upgrade")
-   unless install_triggers.empty? && upgrade_triggers.empty?
-   	packages = (install_triggers.keys + upgrade_triggers.keys).uniq
-   	packages.each do |pkg|
--%>
+# Run trigger scripts if defined
 
-# Add support for triggers
+<%- install_triggers = get_install_triggers("install")
+ upgrade_triggers = get_install_triggers("upgrade") -%>
+
+<%- unless install_triggers.empty? && upgrade_triggers.empty? -%>
+
+<%- packages = (install_triggers.keys + upgrade_triggers.keys).uniq -%>
+
+<%- packages.each do |pkg| -%>
+
 %triggerin -- <%= pkg %>
 # Run scripts on install if defined
 [ $2 = 0 ] || exit 0

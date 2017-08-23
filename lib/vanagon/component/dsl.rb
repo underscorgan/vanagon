@@ -424,7 +424,6 @@ class Vanagon
       def add_preinstall_action(pkg_state, scripts)
         pkg_state = Array(pkg_state)
         scripts = Array(scripts)
-
         if pkg_state.empty? || !(pkg_state - ["install", "upgrade"]).empty?
           raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']"
         end
@@ -441,7 +440,6 @@ class Vanagon
         pkg_state = Array(pkg_state)
         scripts = Array(scripts)
         pkg = String(pkg)
-
         if pkg_state.empty? || !(pkg_state - ["install", "upgrade"]).empty?
           raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']"
         end
