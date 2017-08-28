@@ -555,7 +555,7 @@ class Vanagon
     #
     # @param workdir [String] workdir to put the packaging files into
     def generate_packaging_artifacts(workdir)
-      @platform.generate_packaging_artifacts(workdir, @name, binding)
+      @platform.generate_packaging_artifacts(workdir, @name, binding, self)
     end
 
     # Generate a json hash which lists all of the dependant components of the
