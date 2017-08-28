@@ -279,14 +279,23 @@ class Vanagon
     #   phase of packaging during the state of the system defined by pkg_state (either install or upgrade)
     def get_preinstall_actions(pkg_state)
       pkg_state = Array(pkg_state)
+      preinstall_scripts = Array.new
       if pkg_state.empty? || !(pkg_state - ["install", "upgrade"]).empty?
           raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']"
       end
-      scripts = @components.map(&:preinstall_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
-      if scripts.empty?
+      my_thing = @components.map(&:preinstall_actions).flatten.compact
+      my_thing.each do |thing|
+        install_script = thing.scripts if (thing.pkg_state == pkg_state)
+        #puts install_script.inspect
+        preinstall_scripts.push install_script if (install_script != nil)
+      end
+      #scripts = @components.map(&:preinstall_actions).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
+      #if scripts.empty?
+      if preinstall_scripts.empty?
         return ': no preinstall scripts provided'
       else
-        return scripts.join("\n")
+        #return scripts.join("\n")
+        return preinstall_scripts.join("\n")
       end
     end
 
@@ -299,14 +308,38 @@ class Vanagon
     # RENAME TO ADD _scripts
     def get_install_triggers(pkg_state)
       pkg_state = Array(pkg_state)
-      triggers = {}
+      triggers = Hash.new{|hsh,key| hsh[key] = [] }
+      #triggers = {}
       if pkg_state.empty? || !(pkg_state - ["install", "upgrade"]).empty?
           raise Vanagon::Error, "#{pkg_state} should be an array containing one or more of ['install', 'upgrade']"
       end
-      pkgs = @components.map(&:install_triggers).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:pkg)
-      pkgs.each do |pkg|
-        scripts = @components.map(&:install_triggers).flatten.compact.select { |s| s.pkg_state.include? pkg_state and s.pkg == pkg }.map(&:scripts)
-        triggers[pkg] = scripts
+      #puts "PRINTING PKG STATE"
+      #puts pkg_state.inspect
+      #pkgs = @components.map(&:install_triggers).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:pkg)
+      #puts pkgs.inspect
+      pkgs = @components.map(&:install_triggers).flatten.compact
+      #puts "INSTALL_TRIGGERS"
+      #puts (@components.map(&:install_triggers).flatten.compact).inspect
+      
+      pkgs.each do |package|
+        #puts "inside the do loop"
+        #scripts = @components.map(&:install_triggers).flatten.compact.select { |s| s.pkg_state.include? pkg_state and s.pkg == package.pkg }.map(&:scripts)
+        #scripts = @components.map(&:install_triggers).flatten.compact
+        #puts "the package is"
+        #puts package.pkg.inspect
+        #puts "the script is"
+        #puts package.scripts.inspect
+        #trigger_scripts = String.new
+        #trigger_scripts = package.scripts
+        #scripts = @components.map(&:install_triggers).flatten.compact.select { |s| s.pkg_state.include? pkg_state }.map(&:scripts)
+        trigger_scripts = package.scripts if (package.pkg_state == pkg_state)
+        #puts "PRINTING OUT THE PACKAGE"
+        #puts package.inspect
+        #puts "Trying to access just the package"
+        #puts package.pkg
+        #puts "Printing the script"
+        #trigger_scripts.inspect
+        triggers[package.pkg].push trigger_scripts if (trigger_scripts != nil)
       end
       return triggers
     end

@@ -185,26 +185,28 @@ if [ "$1" -gt 1 ] ; then
 fi
 
 # Run trigger scripts if defined
-
 <%- install_triggers = get_install_triggers("install")
- upgrade_triggers = get_install_triggers("upgrade") -%>
+ upgrade_triggers = get_install_triggers("upgrade") 
+ #puts install_triggers.inspect
+ #puts upgrade_triggers.inspect
+ -%>
+
+
 
 <%- unless install_triggers.empty? && upgrade_triggers.empty? -%>
-
 <%- packages = (install_triggers.keys + upgrade_triggers.keys).uniq -%>
-
-<%- packages.each do |pkg| -%>
+<%- packages.each do |pkg| %>
 
 %triggerin -- <%= pkg %>
 # Run scripts on install if defined
 [ $2 = 0 ] || exit 0
 if [ "$1" -eq 1 ] ; then
   <%= install_triggers[pkg].join("\n") %>
-  : # just in case there are no triggers
+  : # end line
 fi
 elif ["$1" -gt 1 ] ;
   <%= upgrade_triggers[pkg].join("\n") %>
-  : # just in case there are no triggers
+  : # end line
 fi
 <% end -%>
 <% end -%>
