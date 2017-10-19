@@ -453,11 +453,11 @@ class Vanagon
         "mkdir #{archive_directory}",
         "gunzip -c #{name_and_version}.tar.gz | '#{tar}' -C #{archive_directory} -xf -",
         "rm #{name_and_version}.tar.gz",
-        "#{tar} cf #{name_and_version}.tar -C #{archive_directory}/#{name_and_version} `#{find} #{archive_directory}/#{name_and_version} -maxdepth 1 -mindepth 1 -type d | sed -e 's|#{archive_directory}/#{name_and_version}/||'`",
-        "gzip -9c #{name_and_version}.tar > #{name_and_version}.tar.gz",
-        "echo -e \"#{metadata}\" > output/#{target_directory}/#{name_and_version}.json",
-        "cp bill-of-materials output/#{target_directory}/#{name_and_version}-bill-of-materials ||:",
-        "cp #{name_and_version}.tar.gz output/#{target_directory}"
+        "cd #{archive_directory}/#{name_and_version}; #{tar} cf ../../#{name_and_version_and_platform}.tar `#{find} . -type d`",
+        "gzip -9c #{name_and_version_and_platform}.tar > #{name_and_version_and_platform}.tar.gz",
+        "echo -e \"#{metadata}\" > output/#{name_and_version_and_platform}.json",
+        "cp bill-of-materials output/#{name_and_version_and_platform}-bill-of-materials ||:",
+        "cp #{name_and_version_and_platform}.tar.gz output",
       ]
     end
 
