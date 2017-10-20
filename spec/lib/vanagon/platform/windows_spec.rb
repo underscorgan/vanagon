@@ -65,6 +65,13 @@ describe "Vanagon::Platform::Windows" do
           expect(cur_plat._platform.wix_product_version("1.0.g0")).to eq("1.0.0")
         end
       end
+
+      describe '#package_type' do
+        it "skips package generation for 'archive' package types" do
+          cur_plat.package_type 'archive'
+        end
+      end
+
       describe '#generate_msi_packaging_artifacts' do
         before(:each) do
           # Create Workdir and temp root directory
