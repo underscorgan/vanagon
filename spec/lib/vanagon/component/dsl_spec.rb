@@ -76,43 +76,19 @@ end" }
     allow(platform).to receive(:is_windows?).and_return(false)
   end
 
-  describe "#sum_url" do
-    it "sets md5 url and type correctly" do
-      comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
-      comp.sum_url(dummy_md5_url)
-
-      expect(comp._component.options[:sum_url]).to eq(dummy_md5_url)
-      expect(comp._component.options[:sum_type]).to eq('md5')
-    end
-    it "sets sha1 url and type correctly" do
-      comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
-      comp.sum_url(dummy_sha1_url)
-
-      expect(comp._component.options[:sum_url]).to eq(dummy_sha1_url)
-      expect(comp._component.options[:sum_type]).to eq('sha1')
-    end
-    it "sets sha256 url and type correctly" do
-      comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
-      comp.sum_url(dummy_sha256_url)
-
-      expect(comp._component.options[:sum_url]).to eq(dummy_sha256_url)
-      expect(comp._component.options[:sum_type]).to eq('sha256')
-    end
-    it "sets sha512 url and type correctly" do
-      comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
-      comp.sum_url(dummy_sha512_url)
-
-      expect(comp._component.options[:sum_url]).to eq(dummy_sha512_url)
-      expect(comp._component.options[:sum_type]).to eq('sha512')
-    end
-  end
-
   describe "#md5sum" do
     it "sets a checksum value & type correctly" do
       comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
       comp.md5sum(dummy_md5_sum)
 
       expect(comp._component.options[:sum]).to eq(dummy_md5_sum)
+      expect(comp._component.options[:sum_type]).to eq('md5')
+    end
+    it "sets md5 url and type correctly" do
+      comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
+      comp.md5sum(dummy_md5_url)
+
+      expect(comp._component.options[:sum]).to eq(dummy_md5_url)
       expect(comp._component.options[:sum_type]).to eq('md5')
     end
   end
@@ -125,6 +101,13 @@ end" }
       expect(comp._component.options[:sum]).to eq(dummy_sha1_sum)
       expect(comp._component.options[:sum_type]).to eq('sha1')
     end
+    it "sets sha1 url and type correctly" do
+      comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
+      comp.sha1sum(dummy_sha1_url)
+
+      expect(comp._component.options[:sum]).to eq(dummy_sha1_url)
+      expect(comp._component.options[:sum_type]).to eq('sha1')
+    end
   end
 
   describe "#sha256sum" do
@@ -135,6 +118,13 @@ end" }
       expect(comp._component.options[:sum]).to eq(dummy_sha256_sum)
       expect(comp._component.options[:sum_type]).to eq('sha256')
     end
+    it "sets sha256 url and type correctly" do
+      comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
+      comp.sha256sum(dummy_sha256_url)
+
+      expect(comp._component.options[:sum]).to eq(dummy_sha256_url)
+      expect(comp._component.options[:sum_type]).to eq('sha256')
+    end
   end
 
   describe "#sha512sum" do
@@ -143,6 +133,13 @@ end" }
       comp.sha512sum(dummy_sha512_sum)
 
       expect(comp._component.options[:sum]).to eq(dummy_sha512_sum)
+      expect(comp._component.options[:sum_type]).to eq('sha512')
+    end
+    it "sets sha512 url and type correctly" do
+      comp = Vanagon::Component::DSL.new('test-fixture', {}, {})
+      comp.sha512sum(dummy_sha512_url)
+
+      expect(comp._component.options[:sum]).to eq(dummy_sha512_url)
       expect(comp._component.options[:sum_type]).to eq('sha512')
     end
   end
