@@ -14,7 +14,7 @@ if ARGV[0]
 end
 
 require 'packaging'
-Pkg::Util::RakeUtils.load_packaging_tasks
+
 case repo_target
 when 'rpm'
   Pkg::Util::RakeUtils.invoke_task('pl:jenkins:rpm_repos')
