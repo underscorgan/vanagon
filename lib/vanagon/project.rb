@@ -525,7 +525,12 @@ class Vanagon
     #
     # @return [Array] all the files and directories that should be included in the tarball
     def get_tarball_files
-      files = ['file-list', 'bill-of-materials']
+      files = ['file-list']
+      if bill_of_materials
+        files.push "#{bill_of_materials.path}/bill-of-materials"
+      else
+        files.push 'bill-of-materials'
+      end
       files.push get_files.map(&:path)
       files.push get_configfiles.map(&:path)
       if @platform.is_windows?
