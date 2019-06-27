@@ -344,6 +344,22 @@ class Vanagon
       return !!@name.match(/^fedora-.*$/)
     end
 
+    # Utility matcher to determine if the platform is a FIPS variety
+    #
+    # @return [true, false] true if it is a FIPS variety, false otherwise
+    def is_fips?
+      return !!@name.match(/^redhatfips.*$/)
+    end
+
+    # Utility matcher to determine if we can use generic linux builds to
+    # cut down on the time spent recompiling. Generic builds will be suitable
+    # for non-FIPS el, sles, fedora, ubuntu, and debian
+    #
+    # @return [true, false] whether or not we can use generic builds
+    def is_generic?
+      (is_deb? || is_el? || is_sles? || is_fedora?) && !is_fips?
+    end
+
     # Utility matcher to determine is the platform is an aix variety
     #
     # @return [true, false] true if it is an aix variety, false otherwise
