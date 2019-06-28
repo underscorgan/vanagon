@@ -360,6 +360,11 @@ class Vanagon
       (is_deb? || is_el? || is_sles? || is_fedora?) && !is_fips?
     end
 
+    def standard_architecture
+      return 'x86_64' if architecture == 'amd64'
+      architecture
+    end
+
     # Utility matcher to determine is the platform is an aix variety
     #
     # @return [true, false] true if it is an aix variety, false otherwise
