@@ -1,3 +1,4 @@
+<%- @tmp_components = @components.select { |comp| comp.name != 'pe-nginx' } -%>
 SHELL = <%=  @platform.shell %>
 
 <%- merged_environment.to_a(" := ").each do |var| -%>
@@ -19,7 +20,7 @@ file-list-before-build:
 	(<%= @platform.find %> -H "<%= dirnames.join('" "') %>" 2>/dev/null || <%= @platform.find %> "<%= dirnames.join('" "') %>" 2>/dev/null) | <%= "xargs -I[] cygpath --mixed --long-name --absolute [] |" if @platform.is_windows? %> <%= @platform.sort %> | uniq > file-list-before-build
 <%- end -%>
 
-file-list-after-build: <%= @components.map {|comp| comp.name }.join(" ") %>
+file-list-after-build: <%= @tmp_components.map {|comp| comp.name }.join(" ") %>
 <%- if dirnames.empty? -%>
 	touch file-list-after-build
 <%- else -%>
@@ -50,19 +51,19 @@ file-list: file-list-before-build <%= @name %>-project
 <%- end %>
 
 <%- if @cleanup -%>
-cleanup-components: <%= @components.map {|comp| "#{comp.name}-cleanup" }.join(" ") %>
+cleanup-components: <%= @tmp_components.map {|comp| "#{comp.name}-cleanup" }.join(" ") %>
 	touch cleanup-components
 <%- end -%>
 
 <%= @name %>-project: <%= dirnames.join(' ') %> <%= @version_file ? @version_file.path : '' %> <%= @bill_of_materials ? @bill_of_materials.path : '' %> file-list-after-build
 	touch <%= @name %>-project
 
-<%- @components.each do |comp| -%>
+<%- @tmp_components.each do |comp| -%>
 <%= comp.rules(self, @platform).to_s %>
 <%- end -%>
 
-clean: <%= @components.map {|comp| "#{comp.name}-clean" }.join(" ") %>
+clean: <%= @tmp_components.map {|comp| "#{comp.name}-clean" }.join(" ") %>
 
-clobber: <%= @components.map {|comp| "#{comp.name}-clobber" }.join(" ") %>
+clobber: <%= @tmp_components.map {|comp| "#{comp.name}-clobber" }.join(" ") %>
 
-.PHONY: clean clobber  <%= @components.map {|comp| "#{comp.name}-clean #{comp.name}-clobber" }.join(" ") %>
+.PHONY: clean clobber  <%= @tmp_components.map {|comp| "#{comp.name}-clean #{comp.name}-clobber" }.join(" ") %>
