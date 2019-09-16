@@ -63,6 +63,7 @@ class Vanagon
         if component.install_only
           list_of_rules = [
             component_rule,
+            unpack_rule,
             install_rule,
             clean_rule,
             clobber_rule,
@@ -157,7 +158,11 @@ class Vanagon
 
       # Install this component.
       rule("install") do |r|
-        r.dependencies = ["#{component.name}-check"] unless component.install_only
+        if component.install_only
+          r.dependencies = ["#{component.name}-unpack"]
+        else
+          r.dependencies = ["#{component.name}-check"]
+        end
         unless component.install.empty?
           if component.install_only
             r.recipe << andand_multiline(

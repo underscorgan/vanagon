@@ -124,6 +124,8 @@ class Vanagon
     # unpack, patch, configure, build, and check steps.
     attr_accessor :install_only
 
+    attr_accessor :precompiled
+
     # Loads a given component from the configdir
     #
     # @param name [String] the name of the component
@@ -132,10 +134,11 @@ class Vanagon
     # @param platform [Vanagon::Platform] the platform to build the component for
     # @return [Vanagon::Component] the component as specified in the component config
     # @raise if the instance_eval on Component fails, the exception is reraised
-    def self.load_component(name, configdir, settings, platform)
+    def self.load_component(name, configdir, settings, platform, precompiled: false)
       compfile = File.join(configdir, "#{name}.rb")
       dsl = Vanagon::Component::DSL.new(name, settings, platform)
       dsl.instance_eval(File.read(compfile), compfile, 1)
+      dsl.precompiled precompiled
       dsl._component
     rescue StandardError => e
       warn "Error loading project '#{name}' using '#{compfile}':"
@@ -178,6 +181,7 @@ class Vanagon
       @preremove_actions = []
       @postremove_actions = []
       @install_only = false
+      @precompiled = false
     end
 
     # Adds the given file to the list of files and returns @files.

@@ -265,10 +265,11 @@ class Vanagon
       # Adds a component to the project
       #
       # @param name [String] name of component to add. must be present in configdir/components and named $name.rb currently
-      def component(name)
+      # @param precompiled [Bool] set to true if this component should be excluded from the makefile
+      def component(name, precompiled: false)
         warn "Loading #{name}" if @project.settings[:verbose]
         if @include_components.empty? or @include_components.include?(name)
-          component = Vanagon::Component.load_component(name, File.join(Vanagon::Driver.configdir, "components"), @project.settings, @project.platform)
+          component = Vanagon::Component.load_component(name, File.join(Vanagon::Driver.configdir, "components"), @project.settings, @project.platform, precompiled: precompiled)
           @project.components << component
         end
       end

@@ -546,6 +546,10 @@ class Vanagon
         @component.install_only = install_only
       end
 
+      def precompiled(precompiled)
+        @component.precompiled = precompiled
+      end
+
       # Set the homepage for the component
       #
       # @param homepage
