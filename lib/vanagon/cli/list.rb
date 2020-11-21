@@ -42,7 +42,7 @@ class Vanagon
         end
 
         if options[:projects] == options[:platforms]
-          puts "- Projects", output(project_list, options[:space]), "\n", "- Platforms", output(platform_list, options[:space]), "\n"
+          puts "- Projects", output(project_list, options[:space]), "\n", "- Platforms", output(platform_list, options[:space])
         elsif options[:projects]
           puts "- Projects"
           puts output(project_list, options[:space])
