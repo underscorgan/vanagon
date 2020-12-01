@@ -27,7 +27,10 @@ _vanagon_template_sub_projects()
 {
   # how is it checking vanagon_avil_templates if it hasn't been defined yet?
   if [[ -z "$_vanagon_avail_templates" ]] ; then
-    _vanagon_avail_templates=$(vanagon list -r 2>/dev/null)
+    # 2>/dev/null redirects errors to /dev/null
+    # need to remove 1st 2 lines of output 
+    # use `sed`?
+    _vanagon_avail_templates=$(vanagon list -r | sed 1d 2>/dev/null)
   fi
 
   _arguments "1: :(${_vanagon_avail_templates})"
@@ -36,7 +39,7 @@ _vanagon_template_sub_projects()
 _vanagon_template_sub_platforms()
 {
   if [[ -z "$_vanagon_avail_platforms" ]] ; then
-    _vanagon_avail_platforms=$(vanagon list -l 2>/dev/null)
+    _vanagon_avail_platforms=$(vanagon list -l | sed 1d 2>/dev/null)
   fi
 
   _arguments "2: :(${_vanagon_avail_platforms})"
