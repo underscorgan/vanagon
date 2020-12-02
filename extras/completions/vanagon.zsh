@@ -2,21 +2,19 @@ _vanagon()
 {
   local line commands template_arg_commands 
 
-  commands="build build_host_info build_requirements inspect list render sign ship help"
-  template_arg_commands=("build")
+  commands="build build_host_info build_requirements completion inspect list render sign ship help"
+  template_arg_commands=("build" "build_host_info" "build_requirements" "inspect"  "render")
 
   # arguments function provides potential completions to zsh 
   # -C flag inspects completion state and gives context specific completions
   # specs are of the form n:message:action 
   # two colons means the message argument is optional 
   # if the message contains a space, nothing will be pritned
-  # first normal argument = position after the end of the options
   _arguments -C \
     "1: :(${commands})" \
     "*::arg:->args" 
   
-  # if ((template_arg_commands[(Ie)$line[1]])); then <- what is the Ie there?
-  # prevents "invalid subscript"
+  # (Ie)prevents "invalid subscript"
   if ((template_arg_commands[(Ie)$line[1]])); then
     _vanagon_template_sub_projects
     _vanagon_template_sub_platforms
@@ -25,15 +23,12 @@ _vanagon()
 
 _vanagon_template_sub_projects()
 {
-  # how is it checking vanagon_avil_templates if it hasn't been defined yet?
-  if [[ -z "$_vanagon_avail_templates" ]] ; then
+  if [[ -z "$_vanagon_avail_projects" ]] ; then
     # 2>/dev/null redirects errors to /dev/null
-    # need to remove 1st 2 lines of output 
-    # use `sed`?
-    _vanagon_avail_templates=$(vanagon list -r | sed 1d 2>/dev/null)
+    _vanagon_avail_projects=$(vanagon list -r | sed 1d 2>/dev/null)
   fi
 
-  _arguments "1: :(${_vanagon_avail_templates})"
+  _arguments "1: :(${_vanagon_avail_projects})"
 }
 
 _vanagon_template_sub_platforms()
