@@ -1,5 +1,6 @@
 _vanagon()
 {
+    # current shell word in zsh is "$1"
   local line commands template_arg_commands 
 
   commands="build build_host_info build_requirements completion inspect list render sign ship help"
@@ -33,11 +34,15 @@ _vanagon_template_sub_projects()
 
 _vanagon_template_sub_platforms()
 {
-  if [[ -z "$_vanagon_avail_platforms" ]] ; then
+  # num determiens the value of the nth normal argument.
+  # This ensures that the nth normal argument will repeatedly be 
+  # complted with platform names.
+  num=$((${#line[@]}-1))
+  if [[ -z "$_vanagon_avail_platforms" && $num -gt 1 ]] ; then
     _vanagon_avail_platforms=$(vanagon list -l | sed 1d 2>/dev/null)
   fi
-
-  _arguments "2: :(${_vanagon_avail_platforms})"
+  
+  _arguments "$num: :(${_vanagon_avail_platforms})"
 }
 
 # compdef registeres the completion function: compdef <function-name> <program>
