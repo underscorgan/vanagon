@@ -17,14 +17,14 @@ _vanagon()
 
   if [[ $template_arg_commands =~ (^| )$prev($| ) ]] ; then
     if [[ -z "$_vanagon_avail_templates_projects" ]] ; then
-      _vanagon_avail_templates_projects=$(vanagon list -r | sed 1d 2>/dev/null)
+      _vanagon_avail_templates_projects=$({ vanagon list -r | sed 1d; } 2>/dev/null)
       # compgen generates completions filtered based on what has been typed by the user
       COMPREPLY=( $(compgen -W "${_vanagon_avail_templates_projects}" -- "${cur}") )
     fi
   fi 
   # allows multiple platforms to be tab completed 
   if [[ ${#COMP_WORDS[@]} -gt 3 ]] ; then 
-    _vanagon_avail_templates_platforms=$(vanagon list -l | sed 1d 2>/dev/null)
+    _vanagon_avail_templates_platforms=$({ vanagon list -l | sed 1d; } 2>/dev/null)
     COMPREPLY=( $(compgen -W "${_vanagon_avail_templates_platforms}" -- "${cur}") )
   fi
   if [[ $1 == $prev ]] ; then

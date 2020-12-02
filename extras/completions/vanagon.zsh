@@ -26,7 +26,7 @@ _vanagon_template_sub_projects()
 {
   if [[ -z "$_vanagon_avail_projects" ]] ; then
     # 2>/dev/null redirects errors to /dev/null
-    _vanagon_avail_projects=$(vanagon list -r | sed 1d 2>/dev/null)
+    _vanagon_avail_projects=$({ vanagon list -r | sed 1d; } 2>/dev/null)
   fi
 
   _arguments "1: :(${_vanagon_avail_projects})"
@@ -39,7 +39,7 @@ _vanagon_template_sub_platforms()
   # complted with platform names.
   num=$((${#line[@]}-1))
   if [[ -z "$_vanagon_avail_platforms" && $num -gt 1 ]] ; then
-    _vanagon_avail_platforms=$(vanagon list -l | sed 1d 2>/dev/null)
+    _vanagon_avail_platforms=$({ vanagon list -l | sed 1d; } 2>/dev/null)
   fi
   
   _arguments "$num: :(${_vanagon_avail_platforms})"
