@@ -8,6 +8,7 @@ require 'vanagon/extensions/hashable'
 require 'vanagon/cli/build'
 require 'vanagon/cli/build_host_info'
 require 'vanagon/cli/build_requirements'
+require 'vanagon/cli/completion'
 require 'vanagon/cli/inspect'
 require 'vanagon/cli/list'
 require 'vanagon/cli/render'
@@ -50,7 +51,7 @@ class Vanagon
       when 'build_requirements'
         @sub_parser = Vanagon::CLI::BuildRequirements.new
       when 'completion'
-        @sub_parser = Vanagon::CLI::Completoin.new
+        @sub_parser = Vanagon::CLI::Completion.new
       when 'inspect'
         @sub_parser = Vanagon::CLI::Inspect.new
       when 'render'
