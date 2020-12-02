@@ -12,7 +12,7 @@ _vanagon()
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-  commands="build build_host_info build_requirements inspect list render sign ship help"
+  commands="build build_host_info build_requirements completion inspect list render sign ship help"
   template_arg_commands="build build_host_info build_requirements inspect render "
 
   if [[ $template_arg_commands =~ (^| )$prev($| ) ]] ; then
