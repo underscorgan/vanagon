@@ -23,20 +23,22 @@ _vanagon()
 
 _vanagon_template_sub_projects()
 {
-  if [[ -z "$_vanagon_avail_projects" ]] ; then
-    # 2>/dev/null redirects errors to /dev/null
-    _vanagon_avail_projects=$({ vanagon list -r | sed 1d; } 2>/dev/null)
-  fi
+  #_files -W $(PWD)/configs/projects/ -g "*.rb"
+  #if [[ -z "$_vanagon_avail_projects" ]] ; then
+  #  # 2>/dev/null redirects errors to /dev/null
+  #  _vanagon_avail_projects=$({ vanagon list -r | sed 1d; } 2>/dev/null)
+  #fi
 
-  _arguments "1: :(${_vanagon_avail_projects})"
+  _arguments "1: :({ _files -W $(PWD)/configs/projects/ -g '*.rb' })"
 }
 
 _vanagon_template_sub_platforms()
 {
-  if [[ -z "$_vanagon_avail_platforms" ]] ; then
-    _vanagon_avail_platforms=$({ vanagon list -l | sed 1d; } 2>/dev/null)
-  fi
-  _arguments "*: :(${_vanagon_avail_platforms})"
+  #if [[ -z "$_vanagon_avail_platforms" ]] ; then
+  #  _vanagon_avail_platforms=$({ vanagon list -l | sed 1d; } 2>/dev/null)
+  #fi
+  _arguments "*: :({ _files -W $(PWD)/configs/platforms/ -g '*.rb' })"
 }
 # compdef registeres the completion function: compdef <function-name> <program>
 compdef _vanagon vanagon
+#compdef '_files -W $(PWD)/configs/projects/ -g "*.rb"' vanagon
