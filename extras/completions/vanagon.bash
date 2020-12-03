@@ -3,7 +3,7 @@
 _vanagon()
 {
   local cur prev commands template_arg_commands 
-
+# source ~/puppet/vanagon/extras/completions/vanagon.bash
   # COMREPLY is an array variable used to store completions  
   # the completion mechanism uses COMPRELY to display its contents as completions
   COMPREPLY=()
@@ -11,16 +11,15 @@ _vanagon()
   # COMP_CWORD is an index of the COMP_WORDS array pointing to the word the curernt cursor is at
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
-
+  projects=($({ vanagon list -r | sed 1d; } 2>/dev/null))
+  
   commands="build build_host_info build_requirements completion inspect list render sign ship help"
   template_arg_commands="build build_host_info build_requirements inspect render "
 
   if [[ $template_arg_commands =~ (^| )$prev($| ) ]] ; then
-    if [[ -z "$_vanagon_avail_templates_projects" ]] ; then
       _vanagon_avail_templates_projects=$({ vanagon list -r | sed 1d; } 2>/dev/null)
       # compgen generates completions filtered based on what has been typed by the user
       COMPREPLY=( $(compgen -W "${_vanagon_avail_templates_projects}" -- "${cur}") )
-    fi
   fi 
   # allows multiple platforms to be tab completed 
   if [[ ${#COMP_WORDS[@]} -gt 3 ]] ; then 
@@ -34,4 +33,4 @@ _vanagon()
 }
 
 # assign tab complete function `_vanagon ` to `vanagon` command 
-complete -F _vanagon vanagon
+complete -F _vanagon vanagonpup 
